@@ -1,3 +1,5 @@
+var BEM = BEM || {};
+
 /**
  * Module to add data support to bem blocks.
  */
@@ -21,3 +23,11 @@ DATA.prototype.set = function(key, value) {
     this._schemaVerification();
   }
 };
+
+DATA.prototype.get = function(key)  {
+  return this.data[key];
+};
+
+DATA.prototype.getJSON = function() {
+  return this.data;
+}

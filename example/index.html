@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>BEM.DATA | Demo</title>
+  </head>
+  <body>
+    <script type="text/javascript" src="../i-bem__data.js"></script>
+    <script type="text/javascript">
+      var bdata = new BEM.DATA();
+      
+      bdata.schema = {
+        _id : "string",
+        name : "string",
+        amount : "string"
+      };
+
+      bdata.set({
+        _id : 5225,
+        name : "macbook pro",
+        amount : 75000
+      });
+
+      console.log(bdata.get("name"));
+      console.log(bdata.getJSON());
+    </script>
+  </body>
+</html>
