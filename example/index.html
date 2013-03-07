@@ -6,22 +6,21 @@
   <body>
     <script type="text/javascript" src="../i-bem__data.js"></script>
     <script type="text/javascript">
-      var bdata = new BEM.DATA();
-      
-      bdata.schema = {
-        _id : "string",
-        name : "string",
-        amount : "string"
-      };
 
-      bdata.set({
-        _id : 5225,
-        name : "macbook pro",
-        amount : 75000
+      var testNode = BEM.Model.extend({
+        schema : {
+          id : 'string',
+          name : 'string'
+        }
       });
 
-      console.log(bdata.get("name"));
-      console.log(bdata.getJSON());
+      var t = new testNode();
+      t.set({
+        id : 'th576jjh57gjf',
+        name : 'jaison justus',
+        hello : 'test'
+      })
+      console.log(t.get('*'));
     </script>
   </body>
 </html>
