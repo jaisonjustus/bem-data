@@ -7,20 +7,35 @@
     <script type="text/javascript" src="../i-bem__data.js"></script>
     <script type="text/javascript">
 
-      var testNode = BEM.Model.extend({
-        schema : {
-          id : 'string',
-          name : 'string'
-        }
+      var User = new BEM.Model(), 
+          Mark = new BEM.Model();
+      
+      /* Defining Schema. */
+      User.schema({
+        id : 'string',
+        name : 'string'
       });
 
-      var t = new testNode();
-      t.set({
+      Mark.schema({
+        id : 'string',
+        mark : 'number'
+      })
+      
+      /* Adding details. */
+      User.set({
         id : 'th576jjh57gjf',
         name : 'jaison justus',
         hello : 'test'
-      })
-      console.log(t.get('*'));
+      });
+
+      Mark.set({
+        id : 'fhldskfha3276',
+        mark : 34
+      });
+
+      /* Getting data from the models. */
+      console.log(User.get('*'));
+      console.log(Mark.get('*'));
     </script>
   </body>
 </html>

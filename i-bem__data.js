@@ -33,7 +33,7 @@ var extend = function(child) {
 var Model = BEM.Model = function()  {
 
   /* Schema of the model. */
-  this.schema = this.schema || {};
+  this._schema = {};
 
   /* Object to keep data. */
   this.data = {};
@@ -57,9 +57,9 @@ BEM.Model.extend({
     var clear = false;
 
     for(var attribute in this.data)  {
-      if(!this.schema.hasOwnProperty(attribute))  {
+      if(!this._schema.hasOwnProperty(attribute))  {
         delete this.data[attribute];
-      }else if(typeof this.data[attribute] !== this.schema[attribute])  {
+      }else if(typeof this.data[attribute] !== this._schema[attribute])  {
         clear = true;
         break;
       }
@@ -96,6 +96,16 @@ BEM.Model.extend({
     }else {
       return this.data[key];
     }
+  },
+
+  /**
+   * Method to define schema for the model
+   * @method schema
+   * @access public
+   * @param object struct
+   */
+  schema : function(struct) {
+    this._schema = struct;
   }
 
 });
