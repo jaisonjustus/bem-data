@@ -7,35 +7,56 @@
     <script type="text/javascript" src="../i-bem__data.js"></script>
     <script type="text/javascript">
 
-      var User = new BEM.Model(), 
-          Mark = new BEM.Model();
-      
-      /* Defining Schema. */
-      User.schema({
-        id : 'string',
-        name : 'string'
-      });
+    var User = BEM.Model.extend({
 
-      Mark.schema({
-        id : 'string',
-        mark : 'number'
-      })
-      
-      /* Adding details. */
-      User.set({
-        id : 'th576jjh57gjf',
-        name : 'jaison justus',
-        hello : 'test'
-      });
+      initialize : function() {
+        this.schema = {
+          id : "int",
+          username : "string",
+          password : "string"
+        };
+      },
 
-      Mark.set({
-        id : 'fhldskfha3276',
-        mark : 34
-      });
+      authenticate : function() {
+        console.log("authenticating.....", this.get('*'));
+      }
 
-      /* Getting data from the models. */
-      console.log(User.get('*'));
-      console.log(Mark.get('*'));
+    });
+
+    var Friends = BEM.Model.extend({
+
+      initialize : function() {
+        this.schema = {
+          id : "int",
+          friends : "array"
+        };
+      }
+
+    });
+
+    var jaison = new User(),
+        jaisonFriends = new Friends(),
+        jatin = new User()
+        // jatinFriends = new Friends();
+
+console.log(jaison);
+
+    jaison.set({
+      id : 45328,
+      username : 'jaison.justus.lp@gmail.com',
+      password : 'admin12345'
+    });
+
+    jatin.set({
+      id : 45329,
+      username : 'jatin.justus@gmail.com',
+      password : 'user12345'
+    });
+
+    jaison.authenticate();
+    jatin.authenticate();
+
+    console.log(jaison, jatin, jaisonFriends);
     </script>
   </body>
 </html>

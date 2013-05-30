@@ -6,22 +6,26 @@ var BEM = BEM || {};
  * @method extend
  * @access public
  * @param object child
+ * @param object parent
  * @return object
  */
-var extend = function(child) {
-  var base = this;
+var extend = function(child, parent) {
+  parent = (parent) ? parent : this;
+  
+  var mutant = function() { parent.apply(this,arguments); },
+      p = parent.prototype;
+
+  for(var prop in parent.prototype)  { 
+    mutant.prototype[prop] = parent.prototype[prop];
+  }
 
   if(child) {
     for(var prop in child)  {
-      base[prop] = child[prop];
-    }
-
-    for(var prop in child)  {
-      base.prototype[prop] = child[prop];
+      mutant.prototype[prop] = child[prop];
     }
   }
 
-  return base;
+  return mutant;
 }; 
 
 /**
@@ -33,17 +37,22 @@ var extend = function(child) {
 var Model = BEM.Model = function()  {
 
   /* Schema of the model. */
-  this._schema = {};
+  this.schema = {};
 
-  /* Object to keep data. */
-  this.data = {};
+  /* Data transformation with respect to Schema. */
+  this.strict = true;
+
+  /* Object to keep current selected data. */
+  this.datum = {};
+
+  /* Array of datum. */
+  this.data = [];
+
+  this.initialize.apply(this, arguments);
 };
 
-/* Attaching extend capacity to Model. */
-Model.extend = extend;
-
 /* Extending Model class adding common methods to prototype. */
-BEM.Model.extend({
+Model = BEM.Model = extend({
 
   /**
    * Method to verify the asserted data across the defined schema. if the 
@@ -57,9 +66,9 @@ BEM.Model.extend({
     var clear = false;
 
     for(var attribute in this.data)  {
-      if(!this._schema.hasOwnProperty(attribute))  {
+      if(!this.schema.hasOwnProperty(attribute))  {
         delete this.data[attribute];
-      }else if(typeof this.data[attribute] !== this._schema[attribute])  {
+      }else if(typeof this.data[attribute] !== this.schema[attribute])  {
         clear = true;
         break;
       }
@@ -77,8 +86,7 @@ BEM.Model.extend({
    */
   set : function(key, value) {
     if(typeof key === 'object') {
-      this.data = key;
-      this._schemaVerification();
+      this.datum = key;
     }
   },
 
@@ -92,25 +100,11 @@ BEM.Model.extend({
    */
   get : function(key)  {
     if(key === '*') {
-      return this.data;
+      return this.datum;
     }else {
-      return this.data[key];
+      return this.datum[key];
     }
-  },
-
-  /**
-   * Method to define schema for the model
-   * @method schema
-   * @access public
-   * @param object struct
-   */
-  schema : function(struct) {
-    this._schema = struct;
   }
+}, BEM.Model);
 
-});
-
-
-var Collection = BEM.Collection = function()  {
-
-};
+Model.extend = BEM.Model.extend = extend;
