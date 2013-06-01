@@ -28,7 +28,8 @@
       initialize : function() {
         this.schema = {
           id : "int",
-          friend : "string"
+          friend : "string",
+          college : "string"
         };
 
         this.collection = true;
@@ -46,12 +47,16 @@
       salary : '12.345'
     });
 
-    jaisonFriends.set('id', 5222).set('friend', 'edwin david').add();
-    jaisonFriends.set('id', 5227).set('friend', 'joshy Joychan').add();
-    jaisonFriends.set('id', 5226).set('friend', 'joseph sebastian').add();
-    jaisonFriends.set('id', 5228).set('friend', 'jithin babu').add();
+    jaisonFriends.set('id', 5222).set('friend', 'edwin david').set('college','MEC').add();
+    jaisonFriends.set('id', 5227).set('friend', 'joshy Joychan').set('college','MEC').add();
+    jaisonFriends.set('id', 5226).set('friend', 'joseph sebastian').set('college','NIIT').add();
+    jaisonFriends.set('id', 5228).set('friend', 'jithin babu').set('college','PAACET').add();
 
     jaison.authenticate();
+
+    var pal = jaisonFriends.find(5226);
+    var college = jaisonFriends.where({ college : 'MEC' });
+    console.log(pal, college);
     </script>
   </body>
 </html>

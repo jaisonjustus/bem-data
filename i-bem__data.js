@@ -2,7 +2,7 @@
 var BEM = BEM || {};
 
 /**
- * Method to extend the class with subclass.
+ * Extend the class with subclass.
  * @method extend
  * @access public
  * @param object child
@@ -80,7 +80,7 @@ Model = BEM.Model = extend({
   },
 
   /**
-   * Method to enforce the datatype of datum to what specified in the model
+   * Enforce the datatype of datum to what specified in the model
    * schema.
    * @method _enforceSchema
    * @access private
@@ -106,7 +106,7 @@ Model = BEM.Model = extend({
   },
 
   /**
-   * Method to add the datum in the data collection array.
+   * Add the datum in the data collection array.
    * @method add
    * @access private
    */
@@ -115,6 +115,12 @@ Model = BEM.Model = extend({
     return this;
   },
 
+  /**
+   * To get a copy of current datum.
+   * @method copy
+   * @access public
+   * @return object
+   */
   copy : function() {
     var forge = {};
 
@@ -125,7 +131,7 @@ Model = BEM.Model = extend({
   },
 
   /**
-   * Method to set data to the model.
+   * Set value to the model.
    * @method set
    * @access public
    * @param object|string key
@@ -157,8 +163,7 @@ Model = BEM.Model = extend({
   },
 
   /**
-   * Method to get the data. if you pass '*' as key, the method will return
-   * full data.
+   * Get the data. if you pass '*' as key, the method will return full data.
    * @method get
    * @access public
    * @param string key
@@ -172,16 +177,57 @@ Model = BEM.Model = extend({
     }
   },
 
-  getById : function(id)  {
+  /**
+   * To get the object from the collection with respect to the id give.
+   * @method find
+   * @access public
+   * @param string id
+   * @return object
+   */
+  find : function(id)  {
     this.data.forEach(function(datum, index) {
       if(datum[this.id] === id) {
         this.datum = datum;
         this.collectionIndex = index;
       }
-    });
+    }, this);
 
-    return this;
+    return this.datum;
+  },
+
+  /**
+   * To get the data from the collection at the index.
+   * @method at
+   * @access public
+   * @param int index
+   * @return object
+   */
+  at : function(index)  {
+    return this.data[index];
+  },
+
+  /**
+   * To get an array of objects in the collection matches the supplied attributes.
+   * @method where
+   * @access public
+   * @param object attrs
+   * @return array
+   */
+  where : function(attrs)  {
+    var filtered = false,
+        filteredArray = [];
+
+    this.data.forEach(function(datum) {
+      for(var attr in attrs)  {
+        if(datum[attr] === attrs[attr]) { filtered = true; } 
+        else { filtered = false; }
+      }
+      if(filtered)  { filteredArray.push(datum); }
+    }, this);
+
+    return filteredArray;
   }
+  
 }, BEM.Model);
 
 Model.extend = BEM.Model.extend = extend;
