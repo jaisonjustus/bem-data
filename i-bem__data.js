@@ -36,8 +36,11 @@ var extend = function(child, parent) {
  */
 var Model = BEM.Model = function()  {
 
+  /* Specify the model to act as a collection of data. */
+  this.collection = false;
+
   /* Schema of the model. */
-  this.schema = {};
+  this.schema = null;
 
   /* Data transformation with respect to Schema. */
   this.strict = true;
@@ -48,33 +51,77 @@ var Model = BEM.Model = function()  {
   /* Array of datum. */
   this.data = [];
 
+  this.id = 'id';
+
+  this.collectionIndex = -1;
+
   this.initialize.apply(this, arguments);
+
+  if(this.schema) { this._schemaVerification(); }
 };
 
 /* Extending Model class adding common methods to prototype. */
 Model = BEM.Model = extend({
 
   /**
-   * Method to verify the asserted data across the defined schema. if the 
-   * attribute is not found in schema ignore the attribute and if its found
-   * check aganist the type defined in schema. when this fails the data get
-   * reseted.
+   * To verify the dataType specified in the schema is valid or not. if the
+   * datatype if invalid, it omitts the attribute from the schema.
    * @method _schemaVerification
    * @access private
    */
-  _schemaVerification : function() {
-    var clear = false;
-
-    for(var attribute in this.data)  {
-      if(!this.schema.hasOwnProperty(attribute))  {
-        delete this.data[attribute];
-      }else if(typeof this.data[attribute] !== this.schema[attribute])  {
-        clear = true;
-        break;
+  _schemaVerification : function()  {
+    for(var attribute in this.schema) {
+      if(this.schema[attribute] !== 'int' &&
+          this.schema[attribute] !== 'string' &&
+          this.schema[attribute] !== 'float') {
+        delete this.schema[attribute];
       }
-    }  
+    }
+  },
 
-    this.data = (clear) ? {} : this.data;
+  /**
+   * Method to enforce the datatype of datum to what specified in the model
+   * schema.
+   * @method _enforceSchema
+   * @access private
+   */
+  _enforceSchema : function() {
+    var schema = this.schema,
+        dataType = null;
+    
+    for(var attribute in schema) {          
+      dataType = schema[attribute].toLowerCase();
+
+      if(this.datum.hasOwnProperty(attribute))  {
+
+        if(dataType === 'int')  {
+          this.datum[attribute] = parseInt(this.datum[attribute]);
+        }else if(dataType === 'float')  {
+          this.datum[attribute] = parseFloat(this.datum[attribute]);
+        }else if(dataType === 'string') {
+          this.datum[attribute] = this.datum[attribute].toString();
+        }
+      }
+    }
+  },
+
+  /**
+   * Method to add the datum in the data collection array.
+   * @method add
+   * @access private
+   */
+  add : function() {
+    this.data.push(this.copy());
+    return this;
+  },
+
+  copy : function() {
+    var forge = {};
+
+    for(var attribute in this.datum)  {
+      forge[attribute] = this.datum[attribute];
+    }
+    return forge;
   },
 
   /**
@@ -85,9 +132,28 @@ Model = BEM.Model = extend({
    * @param object|string value
    */
   set : function(key, value) {
+    var set = false;
+
     if(typeof key === 'object') {
-      this.datum = key;
+      for(var attribute in key) {
+        this.datum[attribute] = key[attribute];
+      }
+      set = !set;
+    }else if(typeof key === 'string' && value)  {
+      this.datum[key] = value;
     }
+
+    /* if strict mode is enabled enforce the datatype of elements in datum 
+       to the what specified in the schema. */ 
+    if(this.strict) { this._enforceSchema(); }
+
+    if(set) {
+      /* if the collection transformation flag is enabled add the datum to data 
+         array. */
+      if(this.collection) { this.add(); }
+    }
+
+    return this;
   },
 
   /**
@@ -104,6 +170,17 @@ Model = BEM.Model = extend({
     }else {
       return this.datum[key];
     }
+  },
+
+  getById : function(id)  {
+    this.data.forEach(function(datum, index) {
+      if(datum[this.id] === id) {
+        this.datum = datum;
+        this.collectionIndex = index;
+      }
+    });
+
+    return this;
   }
 }, BEM.Model);
 

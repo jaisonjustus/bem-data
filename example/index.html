@@ -18,7 +18,7 @@
       },
 
       authenticate : function() {
-        console.log("authenticating.....", this.get('*'));
+        console.log("authenticating.....", this.get('username'), this.get('password'));
       }
 
     });
@@ -28,35 +28,30 @@
       initialize : function() {
         this.schema = {
           id : "int",
-          friends : "array"
+          friend : "string"
         };
+
+        this.collection = true;
       }
 
     });
 
     var jaison = new User(),
-        jaisonFriends = new Friends(),
-        jatin = new User()
-        // jatinFriends = new Friends();
-
-console.log(jaison);
+        jaisonFriends = new Friends();
 
     jaison.set({
       id : 45328,
       username : 'jaison.justus.lp@gmail.com',
-      password : 'admin12345'
+      password : 'admin12345',
+      salary : '12.345'
     });
 
-    jatin.set({
-      id : 45329,
-      username : 'jatin.justus@gmail.com',
-      password : 'user12345'
-    });
+    jaisonFriends.set('id', 5222).set('friend', 'edwin david').add();
+    jaisonFriends.set('id', 5227).set('friend', 'joshy Joychan').add();
+    jaisonFriends.set('id', 5226).set('friend', 'joseph sebastian').add();
+    jaisonFriends.set('id', 5228).set('friend', 'jithin babu').add();
 
     jaison.authenticate();
-    jatin.authenticate();
-
-    console.log(jaison, jatin, jaisonFriends);
     </script>
   </body>
 </html>
