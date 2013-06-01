@@ -55,6 +55,8 @@ var Model = BEM.Model = function()  {
 
   this.collectionIndex = -1;
 
+  this.url = null;
+
   this.initialize.apply(this, arguments);
 
   if(this.schema) { this._schemaVerification(); }
@@ -141,7 +143,7 @@ Model = BEM.Model = extend({
     var set = false;
 
     if(typeof key === 'object') {
-      for(var attribute in key) {
+      for(var attribute in this.schema) {
         this.datum[attribute] = key[attribute];
       }
       set = !set;
@@ -226,6 +228,39 @@ Model = BEM.Model = extend({
     }, this);
 
     return filteredArray;
+  },
+
+  fetch : function(success, error)  {
+    var successCallback = success,
+        options = {
+          success : null,
+          error : error
+        };
+
+    options.success = function()  {
+      response.forEach(function(datum)  {
+        this.set(datum);
+      }, this);
+
+      if(successCallback) { successCallback.apply(this); }
+    }
+        
+    this._comm('GET', null, options, this);
+  },
+
+  _comm : function(method, data, options, context) {
+    var xhr = new XMLHttpRequest();
+    xhr.open(method, this.url, true);
+    xhr.onload = function() {
+      console.log(this);
+      response = JSON.parse(this.response);
+      if(this.status == 200) {
+        options.success.apply(context, response);
+      }else if(this.status == 400)  {
+        options.error.apply(context, arguments);
+      }
+    }
+    xhr.send();
   }
   
 }, BEM.Model);
