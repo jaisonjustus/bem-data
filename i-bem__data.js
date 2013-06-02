@@ -232,10 +232,7 @@ Model = BEM.Model = extend({
 
   fetch : function(success, error)  {
     var successCallback = success,
-        options = {
-          success : null,
-          error : error
-        };
+        options = { success : null, error : error };
 
     options.success = function()  {
       response.forEach(function(datum)  {
